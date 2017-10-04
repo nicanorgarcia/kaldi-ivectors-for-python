@@ -23,14 +23,11 @@ k=$( echo "l($M)/l(2)" | bc -l )
 k=${k%.*}
 ivector_dim=$(( $num_feats*$k ))
 num_gselect=$((k+1))
-echo $k
-echo $ivector_dim
-echo $num_gselect
 
-	
+
 mDir=$modelDir/M${M}
 if [ ! -d $mDir ]; then	mkdir -p $mDir; fi
-	
+
 train_diagUBM.sh --num-gselect $num_gselect --delta_order $delta_order $featFile $M $mDir || exit 1;
 train_fullUBM.sh --num-gselect $num_gselect $featFile $mDir $mDir/ubm${g} || exit 1;
 train_ivector_extractor.sh --ivector-dim $ivector_dim --num-gselect $num_gselect $mDir/ubm${g}/final.ubm $featFile $mDir/extractor${g} || exit 1;
