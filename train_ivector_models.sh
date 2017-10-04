@@ -6,7 +6,7 @@
 delta_order=0
 
 M=$1
-num_feats=$2
+ivector_dim=$2
 featFile=$3
 modelDir=$4
 
@@ -21,7 +21,6 @@ if [ ! -f ${featFile} ]; then echo "There are no characteristics to process"; ex
 # Generate the UBMs
 k=$( echo "l($M)/l(2)" | bc -l )
 k=${k%.*}
-ivector_dim=$(( $num_feats*$k ))
 num_gselect=$((k+1))
 
 

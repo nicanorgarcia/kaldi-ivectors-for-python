@@ -43,6 +43,7 @@ def extract_ivectors(src_dir,feat_file,ivectors_dir):
         ivectors_dir: Path where the i-vectors will be stored
     Returns:
         ivectors: numpy array with the extracted i-vectors
+        keys: numpy array with the keys (ids) of each i-vector
 
     """
     os.system("./extract_ivectors.sh "+ " " + src_dir + " " + feat_file + " " + ivectors_dir)
