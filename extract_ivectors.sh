@@ -55,7 +55,7 @@ mkdir -p $dir/log
 delta_opts=`cat $srcdir/delta_opts 2>/dev/null`
 
 ## Set up features.
-feats="ark:add-deltas $delta_opts scp:${features} ark:- |"
+feats="ark:copy-matrix scp:${features} ark:- |"
 
   echo "$0: extracting iVectors"
   dubm="fgmm-global-to-gmm $srcdir/final.ubm -|"

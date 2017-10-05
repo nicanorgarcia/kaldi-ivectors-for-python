@@ -2,7 +2,7 @@ source path.sh
 
 num_iters=4
 subsample=2
-min_gaussian_weight=0.0001       
+min_gaussian_weight=0.0001
 remove_low_count_gaussians=true
 num_gselect=4 # Number of Gaussian-selection indices to use while training the model.
 
@@ -20,13 +20,8 @@ fi
 
 mkdir -p $dir
 
-delta_opts=`cat $srcdir/delta_opts 2>/dev/null`
-if [ -f $srcdir/delta_opts ]; then
-  cp $srcdir/delta_opts $dir/ 2>/dev/null
-fi
-
 ## Set up features.
-feats="ark:add-deltas $delta_opts scp:$data ark:- | subsample-feats --n=$subsample ark:- ark:- |"
+feats="ark:copy-matrix scp:$data ark:- | subsample-feats --n=$subsample ark:- ark:- |"
 
 
 #if [ $stage -le -2 ]; then

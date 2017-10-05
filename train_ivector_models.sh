@@ -3,14 +3,10 @@
 # Apache 2.0.
 #
 
-delta_order=0
-
 M=$1
 ivector_dim=$2
 featFile=$3
-modelDir=$4
-
-g="_gi"
+mDir=$4
 
 . path.sh
 
@@ -24,9 +20,7 @@ k=${k%.*}
 num_gselect=$((k+1))
 
 
-mDir=$modelDir/M${M}
 if [ ! -d $mDir ]; then	mkdir -p $mDir; fi
-
-train_diagUBM.sh --num-gselect $num_gselect --delta_order $delta_order $featFile $M $mDir || exit 1;
-train_fullUBM.sh --num-gselect $num_gselect $featFile $mDir $mDir/ubm${g} || exit 1;
-train_ivector_extractor.sh --ivector-dim $ivector_dim --num-gselect $num_gselect $mDir/ubm${g}/final.ubm $featFile $mDir/extractor${g} || exit 1;
+train_diagUBM.sh --num-gselect $num_gselect $featFile $M $mDir || exit 1;
+train_fullUBM.sh --num-gselect $num_gselect $featFile $mDir $mDir/ubm || exit 1;
+train_ivector_extractor.sh --ivector-dim $ivector_dim --num-gselect $num_gselect $mDir/ubm/final.ubm $featFile $mDir/extractor || exit 1;

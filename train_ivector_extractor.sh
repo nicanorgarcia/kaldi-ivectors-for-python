@@ -28,12 +28,8 @@ fi
 
 mkdir -p $dir
 
-delta_opts=`cat $srcdir/delta_opts 2>/dev/null`
-if [ -f $srcdir/delta_opts ]; then
-  cp $srcdir/delta_opts $dir/ 2>/dev/null
-fi
 
-feats="ark:add-deltas $delta_opts scp:$data ark:- |"
+feats="ark:copy-matrix scp:$data ark:- |"
 
 # Initialize the i-vector extractor using the FGMM input
 #if [ $stage -le -2 ]; then
@@ -41,19 +37,16 @@ feats="ark:add-deltas $delta_opts scp:$data ark:- |"
     fgmm-global-to-gmm $dir/final.ubm $dir/final.dubm || exit 1;
     ivector-extractor-init --ivector-dim=$ivector_dim --use-weights=$use_weights \
      $dir/final.ubm $dir/0.ie || exit 1
-#fi 
+#fi
 
 # Do Gaussian selection and posterior extracion
 
 #if [ $stage -le -1 ]; then
 #  echo $nj_full > $dir/num_jobs
   echo "$0: doing Gaussian selection and posterior computation"
-  gmm-gselect --n=$num_gselect $dir/final.dubm "$feats" ark:$dir/temp0.ark || exit 1; #  \| \
-  fgmm-global-gselect-to-post --min-post=$min_post $dir/final.ubm "$feats" \
-     ark:$dir/temp0.ark  ark:$dir/temp1.ark || exit 1; # \| \
-  scale-post ark:$dir/temp1.ark $posterior_scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
-  rm $dir/temp1.ark;
-  rm $dir/temp0.ark;
+  gmm-gselect --n=$num_gselect $dir/final.dubm "$feats" ark:- | \
+  fgmm-global-gselect-to-post --min-post=$min_post $dir/final.ubm "$feats" ark:-  ark:- | \
+  scale-post ark:- $posterior_scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
 #else
 #  if ! [ $nj_full -eq $(cat $dir/num_jobs) ]; then
 #    echo "Num-jobs mismatch $nj_full versus $(cat $dir/num_jobs)"
@@ -94,9 +87,8 @@ while [ $x -lt $num_iters ]; do
                                       # can be sure the queue will support this many.
 	#ivector-extractor-est --num-threads=$nt $dir/$x.ie $dir/acc.$x $dir/$[$x+1].ie || exit 1;
 	ivector-extractor-est $dir/$x.ie $dir/acc.$x $dir/$[$x+1].ie || exit 1;
-	rm $dir/acc.$x.*
+	rm $dir/acc.$x
     if $cleanup; then
-      rm $dir/acc.$x
       rm $dir/$x.ie
     fi
 #  fi

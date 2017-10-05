@@ -1,13 +1,10 @@
-source path.sh
 num_frames=5000000
 subsample=2 # subsample all features with this periodicity, in the main E-M phase.
-delta_window=3
-delta_order=2
 num_iters_init=20
 num_iters=4
 num_gselect=8 # Number of Gaussian-selection indices to use while training
                # the model.
-min_gaussian_weight=0.0001               
+min_gaussian_weight=0.0001
 remove_low_count_gaussians=true
 
 if [ -f path.sh ]; then . ./path.sh; fi
@@ -27,25 +24,23 @@ fi
 
 mkdir -p $dir
 
-delta_opts="--delta-window=$delta_window --delta-order=$delta_order"
-echo $delta_opts > $dir/delta_opts
 
-# This tells the initialization program further ahead to read the features, add the delta features, perform cepstral mean normalization and select voiced frames (note the pipes
-all_feats="ark:add-deltas $delta_opts scp:$data ark:- |"
+# This tells the initialization program further ahead to read the features, note the pipe
+all_feats="ark:copy-matrix scp:$data ark:- |"
 #all_feats="ark:apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 scp:$data ark:- |"
 
 # Same as last one, but also subsamples the features
-feats="ark:add-deltas $delta_opts scp:$data ark:- | subsample-feats --n=$subsample ark:- ark:- |"
+feats="ark:copy-matrix scp:$data ark:- | subsample-feats --n=$subsample ark:- ark:- |"
 #feats="ark:apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 scp:$data ark:- |"
 
 gmm-global-init-from-feats --num-frames=$num_frames \
      --num-gauss=$num_gauss --num-iters=$num_iters_init \
     "$all_feats" $dir/0.dubm || exit 1;
-    
+
 gmm-gselect --n=$num_gselect $dir/0.dubm "$feats" \
-      "ark:|gzip -c >$dir/gselect.JOB.gz"|| exit 1;        
-    
-  
+      "ark:|gzip -c >$dir/gselect.JOB.gz"|| exit 1;
+
+
 for x in `seq 0 $[$num_iters-1]`; do
 	echo "$0: Training pass $x"
 		# Accumulate stats.
