@@ -21,7 +21,7 @@ def gen_feats_file(data_feats,ids,feat_filename):
         np.savetxt(feat_filename,new_feats,fmt="%s")
 
 
-def train(M,ivector_dim,feat_file,model_dir):
+def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
     """
     This function will call the Bash script to train an i-vector extractor (and its corresponding UBM)
     Inputs:
@@ -32,9 +32,19 @@ def train(M,ivector_dim,feat_file,model_dir):
     Returns:
         Nothing
     """
+    if num_gselect==None or ivector_dim == None:
+        k=np.log2(M)
+    if num_gselect==None:
+        num_gselect=k+1
+    if ivector_dim==None:
+        # Read the
+        for key,mat in kaldi_io.read_mat_scp(feat_file):
+            feat_dim=mat.shape[1]
+            break
+        ivector_dim=k*feat_dim
     os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim)+ " " + feat_file + " " + model_dir)
 
-def extract(src_dir,feat_file,ivectors_dir):
+def extract(src_dir,feat_file,ivectors_dir,num_gselect):
     """
     The Bash script checks if the i-vectors have been extracted already.
     Inputs:
@@ -46,7 +56,7 @@ def extract(src_dir,feat_file,ivectors_dir):
         keys: numpy array with the keys (ids) of each i-vector
 
     """
-    os.system("./extract_ivectors.sh "+ " " + src_dir + " " + feat_file + " " + ivectors_dir)
+    os.system("./extract_ivectors.sh --num-gselect "+str(num_gselect)+ " " + src_dir + " " + feat_file + " " + ivectors_dir)Z
     keys=[]
     ivectors=np.empty((0,0))
     for key,mat in kaldi_io.read_vec_flt_scp(ivectors_dir+'/ivector.scp'):

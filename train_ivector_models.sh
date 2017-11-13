@@ -5,8 +5,9 @@
 
 M=$1
 ivector_dim=$2
-featFile=$3
-mDir=$4
+num_gselect=$3
+featFile=$4
+mDir=$5
 
 . path.sh
 
@@ -15,9 +16,9 @@ echo $featFile
 if [ ! -f ${featFile} ]; then echo "There are no characteristics to process"; exit 1; fi
 
 # Generate the UBMs
-k=$( echo "l($M)/l(2)" | bc -l )
-k=${k%.*}
-num_gselect=$((k+1))
+# k=$( echo "l($M)/l(2)" | bc -l )
+# k=${k%.*}
+# num_gselect=$((k+1))
 
 
 if [ ! -d $mDir ]; then	mkdir -p $mDir; fi
