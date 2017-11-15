@@ -6,7 +6,8 @@ def gen_feats_file(data_feats,ids,feat_filename):
     """
     This function goes through the contents of a Kaldi script file (.scp) and
     selects the lines that match each element in ids and then stores this
-    subset in feat_filename.
+    subset in feat_filename. This could be used to select certain utterances
+    or speakers for training and test subsets.
 
     Inputs:
         data_feats: The contents of the .scp file in a Numpy array (two columns)
