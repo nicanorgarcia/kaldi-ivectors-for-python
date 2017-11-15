@@ -37,12 +37,12 @@ def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
     if num_gselect==None:
         num_gselect=k+1
     if ivector_dim==None:
-        # Read the
+        # Read to obtain the dimension of the feature vector
         for key,mat in kaldi_io.read_mat_scp(feat_file):
             feat_dim=mat.shape[1]
             break
         ivector_dim=k*feat_dim
-    os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim)+ " " + feat_file + " " + model_dir)
+    os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim) + " " + str(num_gselect) + " " + feat_file + " " + model_dir)
 
 def extract(src_dir,feat_file,ivectors_dir,num_gselect):
     """
