@@ -70,3 +70,30 @@ def extract(src_dir,feat_file,ivectors_dir,num_gselect):
     ivectors=np.asarray(ivectors)
     keys=np.asarray(keys)
     return ivectors,keys
+
+def ivector_sbjs(ivectors,keys,ids):
+    """
+    This function computes a single i-vector by taking the mean of all the
+    i-vectors with keys that match certain pattern (e. g., the id of a speaker).
+    Each pattern in ids is searched for. If there are no matches for a pattern,
+    a null (zeros) i-vector is used as replacement.
+    Inputs:
+        ivectors: numpy array with the extracted i-vectors
+        keys: numpy array with the keys (ids) of each i-vector
+        ids: numpy array of strings with the patters to search for
+    Returns:
+        ivectors_sbjs: numpy array with one i-vector per pattern in ids
+        non_null: Indices of the non-null i-vectors
+    """
+    ivectors_sbjs=np.empty((0,ivectors.shape[1]))
+    non_null=[]
+    for jdx,iid in enumerate(ids.values):
+        indices=np.asarray([i for i, v in enumerate(keys) if iid in v])
+        if len(indices)>0:
+            ivector_sbj=np.mean(ivectors[indices,:],axis=0)
+            non_null.append(jdx)
+        else:
+            ivector_sbj=np.zeros(ivectors.shape[1])
+            print "Missing i-vector for id: {}".format(iid)
+        ivectors_sbjs=np.vstack((ivectors_sbjs,ivector_sbj))
+    return ivectors_sbjs, non_null
