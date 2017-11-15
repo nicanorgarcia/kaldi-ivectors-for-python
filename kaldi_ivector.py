@@ -51,6 +51,7 @@ def extract(src_dir,feat_file,ivectors_dir,num_gselect):
         src_dir: Model with the i-vector extractor (generated with train_ivector_models)
         feat_file: Path to the Kaldi script (.spc) file with the features to use for i-vector training
         ivectors_dir: Path where the i-vectors will be stored
+        num_gselect: Number of gaussians for the gaussian selection process. Should be the same as in train
     Returns:
         ivectors: numpy array with the extracted i-vectors
         keys: numpy array with the keys (ids) of each i-vector

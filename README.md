@@ -17,8 +17,9 @@ To run both the training and then extract the i-vector you would
 import kaldi_ivector as ivector
 
 M=2
+num_gselect=2
 ivector_dim=2
-ivector.train(M,ivector_dim,'example_data/example_train.scp','example_data/example_model')
-ivectors,keys=ivector.extract('example_data/example_model/extractor', 'example_data/example_test.scp','example_data/ivectors/')
+ivector.train('example_data/example_train.scp','example_data/example_model',M,ivector_dim,num_gselect)
+ivectors,keys=ivector.extract('example_data/example_model/extractor', 'example_data/example_test.scp','example_data/ivectors/',num_gselect)
 
 ```
