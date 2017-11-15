@@ -57,7 +57,7 @@ def extract(src_dir,feat_file,ivectors_dir,num_gselect):
         keys: numpy array with the keys (ids) of each i-vector
 
     """
-    os.system("./extract_ivectors.sh --num-gselect "+str(num_gselect)+ " " + src_dir + " " + feat_file + " " + ivectors_dir)Z
+    os.system("./extract_ivectors.sh --num-gselect "+str(num_gselect)+ " " + src_dir + " " + feat_file + " " + ivectors_dir)
     keys=[]
     ivectors=np.empty((0,0))
     for key,mat in kaldi_io.read_vec_flt_scp(ivectors_dir+'/ivector.scp'):
