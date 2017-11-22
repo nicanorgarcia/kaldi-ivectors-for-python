@@ -26,15 +26,17 @@ def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
     """
     This function will call the Bash script to train an i-vector extractor (and its corresponding UBM)
     Inputs:
-        M: Number of Gaussians in the UBM
-        ivector_dim: dimension of the i-vectors
         feat_file: Path to the Kaldi script (.spc) file with the features to use for i-vector training
         model_dir: Path where the model will be stored. It will create a sub-folder according to the number of Gaussians.
+        M: Number of Gaussians in the UBM
+        ivector_dim: dimension of the i-vectors
+        num_gselect: Number of gaussians for the gaussian selection process
+
     Returns:
-        Nothing
+        num_gselect: Number of gaussians for the gaussian selection process so it can be used during the i-vectors extraction
     """
     if num_gselect==None or ivector_dim == None:
-        k=np.log2(M)
+        k=int(np.log2(M))
     if num_gselect==None:
         num_gselect=k+1
     if ivector_dim==None:
@@ -44,6 +46,7 @@ def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
             break
         ivector_dim=k*feat_dim
     os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim) + " " + str(num_gselect) + " " + feat_file + " " + model_dir)
+    return num_gselecti
 
 def extract(src_dir,feat_file,ivectors_dir,num_gselect):
     """
@@ -80,14 +83,14 @@ def ivector_sbjs(ivectors,keys,ids):
     Inputs:
         ivectors: numpy array with the extracted i-vectors
         keys: numpy array with the keys (ids) of each i-vector
-        ids: numpy array of strings with the patters to search for
+        ids: list of strings with the patters to search for
     Returns:
         ivectors_sbjs: numpy array with one i-vector per pattern in ids
         non_null: Indices of the non-null i-vectors
     """
     ivectors_sbjs=np.empty((0,ivectors.shape[1]))
     non_null=[]
-    for jdx,iid in enumerate(ids.values):
+    for jdx,iid in enumerate(ids):
         indices=np.asarray([i for i, v in enumerate(keys) if iid in v])
         if len(indices)>0:
             ivector_sbj=np.mean(ivectors[indices,:],axis=0)
