@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Example data
+example_data/ivectors
+example_data/example_model

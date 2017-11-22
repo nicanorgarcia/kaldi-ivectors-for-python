@@ -46,7 +46,7 @@ def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
             break
         ivector_dim=k*feat_dim
     os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim) + " " + str(num_gselect) + " " + feat_file + " " + model_dir)
-    return num_gselecti
+    return num_gselect
 
 def extract(src_dir,feat_file,ivectors_dir,num_gselect):
     """
