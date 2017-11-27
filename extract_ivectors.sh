@@ -20,7 +20,7 @@ posterior_scale=1.0 # This scale helps to control for successve features being h
 echo "$0 $@"  # Print the command line for logging
 
 if [ -f path.sh ]; then . ./path.sh; fi
-. parse_options.sh || exit 1;
+. kaldi_ivector/parse_options.sh || exit 1;
 
 
 if [ $# != 3 ]; then

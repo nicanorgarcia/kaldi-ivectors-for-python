@@ -7,7 +7,7 @@ remove_low_count_gaussians=true
 num_gselect=4 # Number of Gaussian-selection indices to use while training the model.
 
 if [ -f path.sh ]; then . ./path.sh; fi
-. parse_options.sh || exit 1;
+. kaldi_ivector/parse_options.sh || exit 1;
 
 data=$1
 srcdir=$2

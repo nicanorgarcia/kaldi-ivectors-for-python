@@ -11,7 +11,7 @@ num_gselect=4 # Number of Gaussian-selection indices to use while training the m
 num_feats=60
 ivector_dim=400 # $(( $num_feats*$num_gselect )) # dimension of the extracted i-vector
 if [ -f path.sh ]; then . ./path.sh; fi
-. parse_options.sh || exit 1;
+. kaldi_ivector/parse_options.sh || exit 1;
 
 fgmm_model=$1
 data=$2

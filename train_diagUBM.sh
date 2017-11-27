@@ -9,7 +9,7 @@ remove_low_count_gaussians=true
 
 if [ -f path.sh ]; then . ./path.sh; fi
 
-. parse_options.sh || exit 1;
+. kaldi_ivector/parse_options.sh || exit 1;
 
 # Filename with the training characteristics
 data=$1

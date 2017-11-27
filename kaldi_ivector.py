@@ -17,6 +17,7 @@ def gen_feats_file(data_feats,ids,feat_filename):
     if not os.path.isfile(feat_filename) :
         new_feats=np.empty((0,2))
         for iid in ids:
+            print iid
             indices = [i for i, v in enumerate(data_feats[:,0]) if iid in v]
             new_feats=np.vstack((new_feats,data_feats[indices,:]))
         np.savetxt(feat_filename,new_feats,fmt="%s")
@@ -45,7 +46,7 @@ def train(feat_file,model_dir,M,ivector_dim=None,num_gselect=None):
             feat_dim=mat.shape[1]
             break
         ivector_dim=k*feat_dim
-    os.system("./train_ivector_models.sh "+str(M) +" "+ str(ivector_dim) + " " + str(num_gselect) + " " + feat_file + " " + model_dir)
+    os.system("kaldi_ivector/train_ivector_models.sh "+str(M) +" "+ str(ivector_dim) + " " + str(num_gselect) + " " + feat_file + " " + model_dir)
     return num_gselect
 
 def extract(src_dir,feat_file,ivectors_dir,num_gselect):
@@ -61,7 +62,7 @@ def extract(src_dir,feat_file,ivectors_dir,num_gselect):
         keys: numpy array with the keys (ids) of each i-vector
 
     """
-    os.system("./extract_ivectors.sh --num-gselect "+str(num_gselect)+ " " + src_dir + " " + feat_file + " " + ivectors_dir)
+    os.system("kaldi_ivector/extract_ivectors.sh --num-gselect "+str(num_gselect)+ " " + src_dir + " " + feat_file + " " + ivectors_dir)
     keys=[]
     ivectors=np.empty((0,0))
     for key,mat in kaldi_io.read_vec_flt_scp(ivectors_dir+'/ivector.scp'):
